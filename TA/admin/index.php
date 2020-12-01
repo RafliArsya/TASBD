@@ -23,6 +23,21 @@ if (isset($_POST['enemyselect'])) {
 	unset($_POST['enemyselect']);
 }
 
+/*if (isset($_SESSION['enemyselect'])) {
+	$id = $_SESSION['enemyselect'];
+	$resultx = mysqli_query($conn, "SELECT * FROM enemy_char where id = $id");
+	if($w = mysqli_fetch_array($resultx)){
+		if(!(isset($_SESSION['enemy_char_select']))){
+			$_SESSION['enemy_char_select'] = $w['char_name'];
+		} 
+	}
+}else{
+	unset($_SESSION['enemyselect']);
+	if(isset($_SESSION['enemy_char_select'])){
+		unset($_SESSION['enemy_char_select']);
+	}
+}*/
+
 if (isset($_SESSION['enemyselect']) && $_SESSION['enemyselect'] > 0 ) {
 	$id = $_SESSION['enemyselect'];
 	$resultx = mysqli_query($conn, "SELECT char_name FROM enemy_char where id = $id");
@@ -34,6 +49,7 @@ if (isset($_SESSION['enemyselect']) && $_SESSION['enemyselect'] > 0 ) {
 		unset($_SESSION['enemy_char_select']);
 	}
 }
+
 // menampilkan pesan selamat datang
 echo "Hai, selamat datang ". $_SESSION['user_name'];
 
@@ -111,7 +127,7 @@ if(isset($_SESSION['modify_char'])){
 	?>
 	</select>
 	</form>
-	<?php if(isset($_SESSION['enemyselect']) && $_SESSION['enemyselect'] > 0) {?>
+	<?php if(isset($_SESSION['enemyselect'])) {?>
 	<table width='80%' border=1 class="table">
 	<tr>
 		<th>Weapon</th>
@@ -124,6 +140,44 @@ if(isset($_SESSION['modify_char'])){
 			echo "<tr>";
 			echo "<td>".$ohk['weapon_name']."</td>";
 			echo "<td>".$ohk['stats_dmg']."</td></tr>";
+		}
+	?>
+	</table>
+	<?php 
+	} ?>
+
+	<form action="index.php" method="post" name="Form_index_Find">
+        <table width="25%" border="0">
+            <tr> 
+                <td>Name</td>
+                <td><input type="text" name="namefind" required></td>
+            </tr>
+            <tr> 
+                <td></td>
+                <td><input type="submit" name="Find_Enemy" value="Find"></td>
+            </tr>
+        </table>
+    </form>
+
+	<?php if(isset($_POST['Find_Enemy'])) {?>
+	<table width='80%' border=1 class="table">
+	<tr>
+		<th>Name</th>
+		<th>Health</th>
+		<th>Special</th>
+		<th>Armor/Face Plate</th>
+		<th>Shield</th>
+	</tr>
+	<?php  
+		$name = $_POST['namefind'];
+		$resultf = mysqli_query($conn, "SELECT * FROM enemy_char where char_name LIKE '%$name%'");
+    	while($refind = mysqli_fetch_array($resultf)) {
+			echo "<tr>";
+			echo "<td>".$refind['char_name']."</td>";
+			echo "<td>".$refind['dmg']."</td>";
+			echo "<td>".$refind['spesial']."</td>";    
+			echo "<td>".$refind['faceplate']."</td>";    
+			echo "<td>".$refind['shield']."</td></tr>";  
 		}
 	?>
 	</table>
